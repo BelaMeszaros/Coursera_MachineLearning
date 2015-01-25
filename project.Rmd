@@ -65,10 +65,11 @@ fit1 <- train(classe ~ ., data=tr, method="rpart")
 
 Expected accuracy
 -----------------
-
+The model in sample accuracy is 54%, which is faily poor, the expected accuracy on the test dataset must be lower than this.
 ```{r}
 fit1
 ```
+
 Further investigation
 ---------------------
 The analysis of the correlation between numeric variables (19 highly correlated variables!) shows a possibility for Principial Component Analysis, but unfortunately I had no time to do that.
@@ -93,6 +94,3 @@ diag(M) <- 0
 View(M)
 which(M>0.8, arr.ind=T)
 ```
-
-Testing
--------

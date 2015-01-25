@@ -240,28 +240,175 @@ With the rpart method I could achive a 54% accuracy which is fairly poor, I expe
 tr &lt;- training[,variables]
 </code></pre>
 
+<p>Checking for near zero variance in variables show no possibility to remove variables:</p>
+
+<pre><code class="r">nsv &lt;- nearZeroVar(tr, saveMetrics=TRUE)
+nsv
+</code></pre>
+
+<pre><code>##                      freqRatio percentUnique zeroVar   nzv
+## user_name             1.100679    0.03057792   FALSE FALSE
+## new_window           47.330049    0.01019264   FALSE  TRUE
+## num_window            1.000000    4.37264295   FALSE FALSE
+## roll_belt             1.101904    6.77810621   FALSE FALSE
+## pitch_belt            1.036082    9.37722964   FALSE FALSE
+## yaw_belt              1.058480    9.97349913   FALSE FALSE
+## total_accel_belt      1.063160    0.14779329   FALSE FALSE
+## gyros_belt_x          1.058651    0.71348486   FALSE FALSE
+## gyros_belt_y          1.144000    0.35164611   FALSE FALSE
+## gyros_belt_z          1.066214    0.86127816   FALSE FALSE
+## accel_belt_x          1.055412    0.83579655   FALSE FALSE
+## accel_belt_y          1.113725    0.72877383   FALSE FALSE
+## accel_belt_z          1.078767    1.52379982   FALSE FALSE
+## magnet_belt_x         1.090141    1.66649679   FALSE FALSE
+## magnet_belt_y         1.099688    1.51870350   FALSE FALSE
+## magnet_belt_z         1.006369    2.32901845   FALSE FALSE
+## roll_arm             52.338462   13.52563449   FALSE FALSE
+## pitch_arm            87.256410   15.73234125   FALSE FALSE
+## yaw_arm              33.029126   14.65701763   FALSE FALSE
+## total_accel_arm       1.024526    0.33635715   FALSE FALSE
+## gyros_arm_x           1.015504    3.27693405   FALSE FALSE
+## gyros_arm_y           1.454369    1.91621649   FALSE FALSE
+## gyros_arm_z           1.110687    1.26388747   FALSE FALSE
+## accel_arm_x           1.017341    3.95984099   FALSE FALSE
+## accel_arm_y           1.140187    2.73672409   FALSE FALSE
+## accel_arm_z           1.128000    4.03628580   FALSE FALSE
+## magnet_arm_x          1.000000    6.82397309   FALSE FALSE
+## magnet_arm_y          1.056818    4.44399144   FALSE FALSE
+## magnet_arm_z          1.036364    6.44684538   FALSE FALSE
+## roll_dumbbell         1.022388   84.20650290   FALSE FALSE
+## pitch_dumbbell        2.277372   81.74498012   FALSE FALSE
+## yaw_dumbbell          1.132231   83.48282540   FALSE FALSE
+## total_accel_dumbbell  1.072634    0.21914178   FALSE FALSE
+## gyros_dumbbell_x      1.003268    1.22821323   FALSE FALSE
+## gyros_dumbbell_y      1.264957    1.41677709   FALSE FALSE
+## gyros_dumbbell_z      1.060100    1.04984201   FALSE FALSE
+## accel_dumbbell_x      1.018018    2.16593619   FALSE FALSE
+## accel_dumbbell_y      1.053061    2.37488533   FALSE FALSE
+## accel_dumbbell_z      1.133333    2.08949139   FALSE FALSE
+## magnet_dumbbell_x     1.098266    5.74864948   FALSE FALSE
+## magnet_dumbbell_y     1.197740    4.30129447   FALSE FALSE
+## magnet_dumbbell_z     1.020833    3.44511263   FALSE FALSE
+## roll_forearm         11.589286   11.08959331   FALSE FALSE
+## pitch_forearm        65.983051   14.85577413   FALSE FALSE
+## yaw_forearm          15.322835   10.14677403   FALSE FALSE
+## total_accel_forearm   1.128928    0.35674243   FALSE FALSE
+## gyros_forearm_x       1.059273    1.51870350   FALSE FALSE
+## gyros_forearm_y       1.036554    3.77637346   FALSE FALSE
+## gyros_forearm_z       1.122917    1.56457038   FALSE FALSE
+## accel_forearm_x       1.126437    4.04647844   FALSE FALSE
+## accel_forearm_y       1.059406    5.11160942   FALSE FALSE
+## accel_forearm_z       1.006250    2.95586586   FALSE FALSE
+## magnet_forearm_x      1.012346    7.76679238   FALSE FALSE
+## magnet_forearm_y      1.246914    9.54031189   FALSE FALSE
+## magnet_forearm_z      1.000000    8.57710733   FALSE FALSE
+## classe                1.469581    0.02548160   FALSE FALSE
+</code></pre>
+
 <h2>The fitted model</h2>
+
+<p>The &ldquo;glm&rdquo; model is not possible, as the outcome variable has more that 2 levels. So my first choice was the rpart method, with the default cross validation method of the caret package:</p>
+
+<pre><code class="r">fit1 &lt;- train(classe ~ ., data=tr, method=&quot;rpart&quot;)
+</code></pre>
+
+<pre><code>## Loading required package: rpart
+</code></pre>
 
 <h2>Expected accuracy</h2>
 
-<pre><code class="r">summary(cars)
+<p>The model in sample accuracy is 54%, which is faily poor, the expected accuracy on the test dataset must be lower than this.</p>
+
+<pre><code class="r">fit1
 </code></pre>
 
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00
+<pre><code>## CART 
+## 
+## 19622 samples
+##    55 predictor
+##     5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## No pre-processing
+## Resampling: Bootstrapped (25 reps) 
+## 
+## Summary of sample sizes: 19622, 19622, 19622, 19622, 19622, 19622, ... 
+## 
+## Resampling results across tuning parameters:
+## 
+##   cp          Accuracy   Kappa       Accuracy SD  Kappa SD  
+##   0.03891896  0.5374427  0.40369906  0.03637426   0.05417782
+##   0.05998671  0.3973889  0.17641898  0.05543960   0.09317581
+##   0.11515454  0.3203188  0.05425158  0.04004372   0.06248624
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was cp = 0.03891896.
 </code></pre>
 
-<p>You can also embed plots, for example:</p>
+<h2>Further investigation</h2>
 
-<pre><code class="r">plot(cars)
+<p>The analysis of the correlation between numeric variables (19 highly correlated variables!) shows a possibility for Principial Component Analysis, but unfortunately I had no time to do that.</p>
+
+<pre><code class="r">numVariables &lt;- c(&quot;num_window&quot;, &quot;roll_belt&quot;, &quot;pitch_belt&quot;,
+               &quot;yaw_belt&quot;, &quot;total_accel_belt&quot;, &quot;gyros_belt_x&quot;, &quot;gyros_belt_y&quot;,
+               &quot;gyros_belt_z&quot;, &quot;accel_belt_x&quot;, &quot;accel_belt_y&quot;, &quot;accel_belt_z&quot;,
+               &quot;magnet_belt_x&quot;, &quot;magnet_belt_y&quot;, &quot;magnet_belt_z&quot;, &quot;roll_arm&quot;,
+               &quot;pitch_arm&quot;, &quot;yaw_arm&quot;, &quot;total_accel_arm&quot;, &quot;gyros_arm_x&quot;,
+               &quot;gyros_arm_y&quot;, &quot;gyros_arm_z&quot;, &quot;accel_arm_x&quot;, &quot;accel_arm_y&quot;,
+               &quot;accel_arm_z&quot;, &quot;magnet_arm_x&quot;, &quot;magnet_arm_y&quot;, &quot;magnet_arm_z&quot;,
+               &quot;roll_dumbbell&quot;, &quot;pitch_dumbbell&quot;, &quot;yaw_dumbbell&quot;, &quot;total_accel_dumbbell&quot;,
+               &quot;gyros_dumbbell_x&quot;, &quot;gyros_dumbbell_y&quot;, &quot;gyros_dumbbell_z&quot;,
+               &quot;accel_dumbbell_x&quot;, &quot;accel_dumbbell_y&quot;, &quot;accel_dumbbell_z&quot;, 
+               &quot;magnet_dumbbell_x&quot;, &quot;magnet_dumbbell_y&quot;, &quot;magnet_dumbbell_z&quot;,
+               &quot;roll_forearm&quot;, &quot;pitch_forearm&quot;, &quot;yaw_forearm&quot;, &quot;total_accel_forearm&quot;,
+               &quot;gyros_forearm_x&quot;, &quot;gyros_forearm_y&quot;, &quot;gyros_forearm_z&quot;,
+               &quot;accel_forearm_x&quot;, &quot;accel_forearm_y&quot;, &quot;accel_forearm_z&quot;,
+               &quot;magnet_forearm_x&quot;,  &quot;magnet_forearm_y&quot;, &quot;magnet_forearm_z&quot;)
+M &lt;- abs(cor(tr[,numVariables]))
+diag(M) &lt;- 0
+View(M)
+which(M&gt;0.8, arr.ind=T)
 </code></pre>
 
-<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-4"/> </p>
+<pre><code>##                  row col
+## yaw_belt           4   2
+## total_accel_belt   5   2
+## accel_belt_y      10   2
+## accel_belt_z      11   2
+## accel_belt_x       9   3
+## magnet_belt_x     12   3
+## roll_belt          2   4
+## roll_belt          2   5
+## accel_belt_y      10   5
+## accel_belt_z      11   5
+## pitch_belt         3   9
+## magnet_belt_x     12   9
+## roll_belt          2  10
+## total_accel_belt   5  10
+## accel_belt_z      11  10
+## roll_belt          2  11
+## total_accel_belt   5  11
+## accel_belt_y      10  11
+## pitch_belt         3  12
+## accel_belt_x       9  12
+## gyros_arm_y       20  19
+## gyros_arm_x       19  20
+## magnet_arm_x      25  22
+## accel_arm_x       22  25
+## magnet_arm_z      27  26
+## magnet_arm_y      26  27
+## accel_dumbbell_x  35  29
+## accel_dumbbell_z  37  30
+## gyros_dumbbell_z  34  32
+## gyros_forearm_z   47  32
+## gyros_dumbbell_x  32  34
+## gyros_forearm_z   47  34
+## pitch_dumbbell    29  35
+## yaw_dumbbell      30  37
+## gyros_forearm_z   47  46
+## gyros_dumbbell_x  32  47
+## gyros_dumbbell_z  34  47
+## gyros_forearm_y   46  47
+</code></pre>
 
 </body>
 
