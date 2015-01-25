@@ -1,0 +1,98 @@
+Coursera Machine Learning Project
+========================================================
+
+Summary
+-------
+The goal of your project is to predict the manner how some exercises were conducted based on the data in the training dataset. My original plan was to test several methods available in the caret package on the training dataset, however I could conduct only the model fitting with *CART method* ("rpart"). Although I have cleaned the training dataset and removed some variables, the *random forest* method ("rf") was running too long, and the *gradient boosting* method ("gbm") generated an out of memory error.
+With investigating the correlation between the variables I may get a  better and feasible model prediction.
+With the rpart method I could achive a 54% accuracy which is fairly poor, I expect about 40% pass rate in the test dataset.
+
+Background
+----------
+Using devices such as *Jawbone Up, Nike FuelBand*, and *Fitbit* it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify *how much* of a particular activity they do, but they rarely quantify *how well* they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har
+
+The training data for this project are available here: 
+
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
+
+The test data are available here: 
+
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+
+The data for this project come from this source: http://groupware.les.inf.puc-rio.br/har
+
+Getting data
+------------
+The dataset is presented in comma separated format, it doesn't need any preformatting:
+
+```r
+library(caret)
+```
+
+```
+## Warning: package 'caret' was built under R version 3.1.2
+```
+
+```
+## Loading required package: lattice
+## Loading required package: ggplot2
+```
+
+```r
+training <- read.csv("pml-training.csv")
+```
+A quick review of the dataset's summary highlights that there is a lot of variable with missing or invalid data. The imputing method would be unreliable in case of a so high rate of missing data, so I simply discarded those variable and crated a dataset with the remaining variables.
+
+Cleaning data
+-------------
+
+```r
+variables <- c("user_name", "new_window", "num_window", "roll_belt", "pitch_belt",
+               "yaw_belt", "total_accel_belt", "gyros_belt_x", "gyros_belt_y",
+               "gyros_belt_z", "accel_belt_x", "accel_belt_y", "accel_belt_z",
+               "magnet_belt_x", "magnet_belt_y", "magnet_belt_z", "roll_arm",
+               "pitch_arm", "yaw_arm", "total_accel_arm", "gyros_arm_x",
+               "gyros_arm_y", "gyros_arm_z", "accel_arm_x", "accel_arm_y",
+               "accel_arm_z", "magnet_arm_x", "magnet_arm_y", "magnet_arm_z",
+               "roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell", "total_accel_dumbbell",
+               "gyros_dumbbell_x", "gyros_dumbbell_y", "gyros_dumbbell_z",
+               "accel_dumbbell_x", "accel_dumbbell_y", "accel_dumbbell_z", 
+               "magnet_dumbbell_x", "magnet_dumbbell_y", "magnet_dumbbell_z",
+               "roll_forearm", "pitch_forearm", "yaw_forearm", "total_accel_forearm",
+               "gyros_forearm_x", "gyros_forearm_y", "gyros_forearm_z",
+               "accel_forearm_x", "accel_forearm_y", "accel_forearm_z",
+               "magnet_forearm_x",  "magnet_forearm_y", "magnet_forearm_z", "classe")
+tr <- training[,variables]
+```
+
+The fitted model
+----------------
+
+Expected accuracy
+-----------------
+
+
+
+```r
+summary(cars)
+```
+
+```
+##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
+```
+
+You can also embed plots, for example:
+
+
+```r
+plot(cars)
+```
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
